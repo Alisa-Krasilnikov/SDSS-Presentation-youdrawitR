@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="Presentation_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Presentation_files/libs/quarto-html/tabby.min.js"></script>
+<script src="Presentation_files/libs/quarto-html/popper.min.js"></script>
+<script src="Presentation_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="Presentation_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Presentation_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="Presentation_files/libs/quarto-html/quarto-syntax-highlighting-226bd0f977fa82dfae4534cac220d79a.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.7.23">
+
+  <meta name="author" content="Alisa Krasilnikov, Dr.&nbsp;Emily Robinson">
+  <title>youdrawitR: Integrating Interactive Graphical Testing into the ggplot2 Ecosystem</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="Presentation_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="Presentation_files/libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="Presentation_files/libs/revealjs/dist/theme/quarto-00ac2f6af1389919a18f42df5b7c0002.css">
+  <link rel="stylesheet" href="custom.css">
+  <link href="Presentation_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="Presentation_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="Presentation_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="Presentation_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+  <script src="Presentation_files/libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+  <script src="Presentation_files/libs/r2d3-render-0.1.0/r2d3-render.js"></script>
+  <script src="Presentation_files/libs/webcomponents-2.0.0/webcomponents.js"></script>
+  <script src="Presentation_files/libs/r2d3-binding-0.2.6/r2d3.js"></script>
+  <script src="Presentation_files/libs/d3v6-6.2.0/d3.min.js"></script>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" data-background-image="images/logo.png" data-background-position="50% 15%" data-background-size="15%" class="quarto-title-block center">
+  <h1 class="title"><strong>youdrawitR</strong>: Integrating Interactive Graphical Testing into the <strong>ggplot2</strong> Ecosystem</h1>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Alisa Krasilnikov, Dr.&nbsp;Emily Robinson 
+</div>
+</div>
+</div>
+
+</section>
+<section id="how-do-people-actually-read-graphs" class="slide level2">
+<h2>How do people actually read graphs?</h2>
+<ul>
+<li>Visualization turns raw data into accessible narratives</li>
+<li>But <strong>how accurately</strong> do people interpret what they see?</li>
+<li>Research shows judgments like “fitting a line by eye” are:
+<ul>
+<li>Systematically <strong>biased</strong></li>
+<li>Yet remarkably <strong>consistent</strong> across individuals</li>
+</ul></li>
+</ul>
+</section>
+<section id="the-you-draw-it-idea" class="slide level2">
+<h2>The “You Draw It” Idea</h2>
+<ul>
+<li>Introduced by the <strong>New York Times</strong> in 2015</li>
+<li>Show viewers part of a trend + ask them to <strong>draw the rest</strong></li>
+<li>Reveals assumptions, biases, and engagement in a way passive charts cannot</li>
+</ul>
+<blockquote>
+<p><em>What if we could bring this into R?</em></p>
+</blockquote>
+</section>
+<section id="youdrawitr-as-a-graphical-testing-tool" class="slide level2">
+<h2>youdrawitR as a Graphical Testing Tool</h2>
+<ul>
+<li>Originally created by Dr.&nbsp;Emily Robinson
+<ul>
+<li>Designed to render within Shiny to receive user input</li>
+</ul></li>
+<li>Built as an R function by Dillon Murphy</li>
+</ul>
+</section>
+<section id="the-problem-with-the-old-youdrawitr" class="slide level2">
+<h2>The Problem with the Old <code>youdrawitR</code></h2>
+<ul>
+<li>Required knowledge of <strong>JavaScript and D3</strong></li>
+<li>Not accessible to the broader R community</li>
+<li>Not easily extensible to new plot types + other aesthetic features</li>
+</ul>
+<p>The statistical visualization community works in <strong><code>ggplot2</code></strong>, so why should interactive testing be any different?</p>
+</section>
+<section id="our-solution-a-ggplot2-native-interface" class="slide level2">
+<h2>Our Solution: A ggplot2-Native Interface</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a>(<span class="fu">ggplot</span>(<span class="at">data =</span> mtcars, <span class="fu">aes</span>(<span class="at">x =</span> wt, <span class="at">y =</span> mpg)) <span class="sc">+</span></span>
+<span id="cb1-2"><a href=""></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb1-3"><a href=""></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Weight"</span>, <span class="at">y =</span> <span class="st">"Miles Per Gallon"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb1-4"><a href=""></a><span class="fu">drawit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Pass a <code>ggplot2</code> object directly into <code>drawit()</code> or <code>sketchit()</code></li>
+<li>No JavaScript required</li>
+<li>Interactivity as a <strong>layer</strong>, just like a geom or theme</li>
+</ul>
+</section>
+<section id="restructuring-of-youdrawitr" class="slide level2">
+<h2>Restructuring of <code>youdrawitR</code></h2>
+
+<img data-src="images/workflowFinal.png" class="r-stretch"></section>
+<section id="restructuring-of-youdrawitr-1" class="slide level2">
+<h2>Restructuring of <code>youdrawitR</code></h2>
+
+<img data-src="images/multiLayer.png" class="quarto-figure quarto-figure-center r-stretch"></section>
+<section id="restructuring-of-youdrawitr-2" class="slide level2">
+<h2>Restructuring of <code>youdrawitR</code></h2>
+
+<img data-src="images/futureAdd.png" class="quarto-figure quarto-figure-center r-stretch"></section>
+<section id="drawit-structured-prediction" class="slide level2">
+<h2><code>drawit()</code>: Structured Prediction</h2>
+<ul>
+<li>User draws a predicted trend across a <strong>highlighted region</strong></li>
+<li>Designed for <strong>one-to-one</strong> x-y matching</li>
+<li>Useful for: forecasting tasks, graphical testing, education</li>
+</ul>
+<div style="height: 350px; width: 500px; overflow: hidden; position: relative;">
+<div class="cell">
+<div class="cell-output-display">
+<div id="htmlwidget-06523aaefaa3934b5898" style="width:400px;height:300px;" class="r2d3 html-widget"></div>
+<script type="application/json" data-for="htmlwidget-06523aaefaa3934b5898">{"x":{"data":{"layers":[{"geom_type":"point","data":{"x":[2.62,2.875,2.32,3.215,3.44,3.46,3.57,3.19,3.15,3.44,3.44,4.07,3.73,3.78,5.25,5.424,5.345,2.2,1.615,1.835,2.465,3.52,3.435,3.84,3.845,1.935,2.14,1.513,3.17,2.77,3.57,2.78],"y":[21,21,22.8,21.4,18.7,18.1,14.3,24.4,22.8,19.2,17.8,16.4,17.3,15.2,10.4,10.4,14.7,32.4,30.4,33.9,21.5,15.5,15.2,13.3,19.2,27.3,26,30.4,15.8,19.7,15,21.4],"group":[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],"shape":[19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19],"colour":["black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black"],"fill":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"size":[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],"alpha":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null]},"aes_params":{},"geom_params":{"na.rm":false}},{"geom_type":"smooth","data":{"x":[1.513,1.562506329113924,1.612012658227848,1.661518987341772,1.711025316455696,1.76053164556962,1.810037974683544,1.859544303797468,1.909050632911392,1.958556962025316,2.008063291139241,2.057569620253164,2.107075949367089,2.156582278481013,2.206088607594937,2.255594936708861,2.305101265822785,2.354607594936709,2.404113924050633,2.453620253164557,2.503126582278481,2.552632911392405,2.602139240506329,2.651645569620253,2.701151898734177,2.750658227848101,2.800164556962025,2.849670886075949,2.899177215189874,2.948683544303798,2.998189873417722,3.047696202531646,3.09720253164557,3.146708860759494,3.196215189873418,3.245721518987342,3.295227848101266,3.34473417721519,3.394240506329114,3.443746835443038,3.493253164556962,3.542759493670886,3.59226582278481,3.641772151898734,3.691278481012659,3.740784810126582,3.790291139240507,3.839797468354431,3.889303797468355,3.938810126582279,3.988316455696203,4.037822784810126,4.087329113924051,4.136835443037976,4.186341772151899,4.235848101265823,4.285354430379748,4.334860759493671,4.384367088607595,4.43387341772152,4.483379746835443,4.532886075949367,4.582392405063292,4.631898734177216,4.681405063291139,4.730911392405064,4.780417721518988,4.829924050632911,4.879430379746836,4.928936708860761,4.978443037974684,5.027949367088608,5.077455696202533,5.126962025316456,5.17646835443038,5.225974683544305,5.275481012658228,5.324987341772152,5.374493670886077,5.424],"y":[29.19894067781262,28.9343555091934,28.66977034057417,28.40518517195495,28.14060000333573,27.87601483471651,27.61142966609729,27.34684449747807,27.08225932885885,26.81767416023963,26.55308899162041,26.28850382300119,26.02391865438197,25.75933348576275,25.49474831714353,25.23016314852431,24.96557797990509,24.70099281128587,24.43640764266665,24.17182247404743,23.90723730542821,23.64265213680899,23.37806696818977,23.11348179957055,22.84889663095133,22.58431146233211,22.31972629371289,22.05514112509367,21.79055595647445,21.52597078785523,21.26138561923601,20.99680045061679,20.73221528199757,20.46763011337834,20.20304494475913,19.93845977613991,19.67387460752069,19.40928943890147,19.14470427028225,18.88011910166303,18.61553393304381,18.35094876442459,18.08636359580537,17.82177842718615,17.55719325856693,17.29260808994771,17.02802292132849,16.76343775270927,16.49885258409005,16.23426741547082,15.9696822468516,15.70509707823238,15.44051190961316,15.17592674099394,14.91134157237473,14.6467564037555,14.38217123513628,14.11758606651706,13.85300089789784,13.58841572927862,13.3238305606594,13.05924539204018,12.79466022342096,12.53007505480174,12.26548988618252,12.0009047175633,11.73631954894408,11.47173438032486,11.20714921170564,10.94256404308642,10.6779788744672,10.41339370584798,10.14880853722876,9.884223368609536,9.61963819999032,9.355053031371096,9.090467862751879,8.825882694132659,8.561297525513435,8.296712356894218],"ymin":[26.96375962430461,26.74821163097799,26.53229364311802,26.31597980395271,26.09924203158688,25.88204980754886,25.66436994643672,25.44616634589806,25.22739971652308,25.00802729174094,24.78800251853425,24.5672747307859,24.34578880841752,24.1234848272503,23.90029770680491,23.67615686614533,23.45098590143995,23.2247023032092,22.99721723624465,22.76843541081476,22.53825507976841,22.30656820205489,22.073260818275,21.83821368712723,21.6013032316477,21.3624028393291,21.12138454881532,20.87812113640567,20.63248858728131,20.38436889970829,20.13365312787855,19.88024452513977,19.62406161080197,19.3650409583153,19.1031394977534,18.83833614606235,18.57063262492164,18.30005339346523,18.02664470190815,17.7504728499618,17.47162179868021,17.19019032705795,16.90628894125876,16.62003673601427,16.33155837985716,16.04098135600061,15.74843354658199,15.45404120604775,15.15792733394895,14.86021043043173,14.56100359953158,14.26041395508463,13.9585422800956,13.65548289101828,13.35132366201053,13.04614616950194,12.74002592337203,12.43303265700067,12.12523065400279,11.8166790943701,11.50743240692861,11.1975406184823,10.88704969280636,10.57600185485578,10.2644358972571,9.952387467439799,9.639889334716894,9.326971637313966,9.013662109828241,8.69998629192386,8.385967719274447,8.071628097880652,7.756987462942243,7.44206432347028,7.12687579379879,6.811437713108528,6.495764754014758,6.179870521202972,5.863767641025408,5.547467842899183],"ymax":[31.43412173132062,31.1204993874088,30.80724703803033,30.49439053995719,30.18195797508459,29.86997986188417,29.55848938575787,29.24752264905809,28.93711894119463,28.62732102873833,28.31817546470658,28.00973291521648,27.70204850034643,27.39518214427521,27.08919892748216,26.78416943090329,26.48017005837023,26.17728331936254,25.87559804908865,25.57520953728011,25.27621953108801,24.97873607156309,24.68287311810455,24.38874991201387,24.09649003025496,23.80622008533512,23.51806803861046,23.23216111378166,22.94862332566759,22.66757267600217,22.38911811059347,22.11335637609381,21.84036895319317,21.57021926844139,21.30295039176486,21.03858340621747,20.77711659011973,20.5185254843377,20.26276383865634,20.00976535336425,19.7594460674074,19.51170720179122,19.26643825035197,19.02352011835803,18.78282813727669,18.5442348238948,18.30761229607498,18.07283429937078,17.83977783423114,17.60832440050991,17.37836089417164,17.14978020138014,16.92248153913073,16.6963705909696,16.47135948273892,16.24736663800907,16.02431654690053,15.80213947603345,15.58077114179289,15.36015236418713,15.14022871439019,14.92095016559806,14.70227075403555,14.48414825474771,14.26654387510795,14.0494219676868,13.83274976317126,13.61649712333576,13.40063631358304,13.18514179424897,12.96999002965995,12.75515931381531,12.54062961151527,12.32638241374879,12.11240060618185,11.89866834963366,11.685170971489,11.47189486706235,11.25882741000146,11.04595687088925],"group":[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],"colour":["#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF","#3366FF"],"fill":["#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF","#999999FF"],"linewidth":[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],"alpha":[0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4]},"aes_params":{},"geom_params":{"na.rm":false,"orientation":null,"se":true},"show_on_finish":true}],"labels":{"x":"Weight","y":"Miles Per Gallon"},"scales":{"x_domain":[1.513,5.424],"y_domain":[5.547467842899183,33.9]}},"type":"list","container":"svg","options":{"drawit":true,"shiny_message_loc":null,"draw_start":null,"smoother":0.5,"interpolator":null},"script":"var d3Script = function(d3, r2d3, data, svg, width, height, options, theme, console) {\nthis.d3 = d3;\n/* R2D3 Source File:  /Library/Frameworks/R.framework/Versions/4.5-x86_64/Resources/library/youdrawitR/d3/point.js */\nwindow.renderPointLayer = function(svg, plot, layer) {\n\n  const g = plot.g;\n  const xScale = plot.x;\n  const yScale = plot.y;\n\n  // Normalize data\n  function asRows(x) {\n    if (Array.isArray(x)) return x;\n    if (x && typeof x === \"object\") {\n      const cols = Object.keys(x);\n      if (!cols.length) return [];\n      const n = Array.isArray(x[cols[0]]) ? x[cols[0]].length : 0;\n      return d3.range(n).map(i => {\n        const row = {};\n        cols.forEach(k => row[k] = Array.isArray(x[k]) ? x[k][i] : x[k]);\n        return row;\n      });\n    }\n    return [];\n  }\n\n  // Handle missing data\n  const pts = asRows(layer.data).filter(d => {\n    return (\n      d.x != null && !isNaN(d.x) &&\n      d.y != null && !isNaN(d.y)\n      );\n  });\n\n  const rDefault = layer.aes_params?.size ?? 3;\n  const alphaDefault = layer.aes_params?.alpha ?? 1;\n\n  g.append(\"g\")\n    .attr(\"class\", \"geom-point\")\n    .selectAll(\"circle\")\n    .data(pts)\n    .enter()\n    .append(\"circle\")\n    .attr(\"cx\", d => xScale(d.x))\n    .attr(\"cy\", d => yScale(d.y))\n    .attr(\"r\", d => d.size ? (+d.size * 3) : rDefault)\n    .attr(\"fill\", d => d.colour || layer.aes_params?.colour || \"black\")\n    .attr(\"opacity\", d => d.alpha != null ? d.alpha : alphaDefault);\n\n};\n\n/* R2D3 Source File:  /Library/Frameworks/R.framework/Versions/4.5-x86_64/Resources/library/youdrawitR/d3/smooth.js */\nwindow.renderSmoothLayer = function(svg, plot, layer) {\n\n  const g = plot.g;\n  const x = plot.x;\n  const y = plot.y;\n\n  // Normalize data\n  function asRows(x) {\n    if (Array.isArray(x)) return x;\n    if (x && typeof x === \"object\") {\n      const cols = Object.keys(x);\n      if (!cols.length) return [];\n      const n = Array.isArray(x[cols[0]]) ? x[cols[0]].length : 0;\n      return d3.range(n).map(i => {\n        const row = {};\n        cols.forEach(k => row[k] = Array.isArray(x[k]) ? x[k][i] : x[k]);\n        return row;\n      });\n    }\n    return [];\n  }\n\n  const rows = asRows(layer.data);\n\n  const line = d3.line()\n    .defined(d => d.y != null && !isNaN(d.y)) // handle missing values\n    .x(d => x(d.x))\n    .y(d => y(d.y));\n\n  // drawing CI ribbon if we have one\n  if (rows[0]?.ymin != null && rows[0]?.ymax != null) {\n  const area = d3.area()\n    .x(d => x(+d.x))\n    .y0(d => y(+d.ymin))\n    .y1(d => y(+d.ymax));\n\n  g.append(\"path\")\n    .datum(rows)\n    .attr(\"fill\", \"#999999\")\n    .attr(\"opacity\", 0.2)\n    .attr(\"d\", area);\n  }\n\n  // strokeWidth accounting for \"size\" or \"linewidth\"\n  const strokeWidth =\n    rows[0]?.linewidth ??\n    rows[0]?.size ??\n    layer.aes_params?.linewidth ??\n    layer.aes_params?.size ??\n    5;\n\n  g.append(\"path\")\n    .datum(rows)\n    .attr(\"class\", \"geom-smooth\")\n    .attr(\"fill\", \"none\")\n    .attr(\"stroke\", layer.aes_params?.colour || \"blue\")\n    .attr(\"stroke-width\", strokeWidth + 2) // Make it look similar to ggplot\n    .attr(\"stroke-linecap\", \"round\") // make the ends round\n    .attr(\"d\", line);\n};\n\n/* R2D3 Source File:  /Library/Frameworks/R.framework/Versions/4.5-x86_64/Resources/library/youdrawitR/d3/drawit.js */\n(function () {\n  // Key changes made due to the addition of multiple layers:\n    // rowsFrom converts the data into row-oriented here; previously done by scatter.js\n      // This is because we have to match multiLayer.js\n    // Our gapping strategy is different as a consequence, also updated to be more data-driven\n      // Previously relied heavily on Dillon's code, now restructured\n\n  function rowsFrom(input) {\n    if (Array.isArray(input)) return input;\n\n    if (input && typeof input === \"object\") {\n    const cols = Object.keys(input);\n    if (!cols.length) return [];\n\n    const n = Array.isArray(input[cols[0]]) ? input[cols[0]].length : 0;\n\n    return d3.range(n).map(i => {\n      const row = {};\n      cols.forEach(k => {\n        row[k] = Array.isArray(input[k]) ? input[k][i] : input[k];\n      });\n      return row;\n    });\n    }\n    return [];\n  }\n\n  // Attach drawit state to the SVG DOM node\n  // This allows multiple calls without reinitializing everything\n  function ensureState(svg) {\n    const root = svg.node();\n    // We want to store drawing-related state on the SVG itself so that:\n      // the state persists across function calls\n      // multiple SVGs can each have their own independent state\n    root.__drawit__ = root.__drawit__ || {};\n    return root.__drawit__;\n  }\n\n  // helper to capitalize first letter (used later)\n    function capitalize(str) {\n      return str.charAt(0).toUpperCase() + str.slice(1);\n    }\n\n  // Get status on whether line is done or not based on how much is filled in\n  // Only really care if it's done or not, used later\n  function get_user_line_status(state) {\n    const drawable_points = state.drawable_points || [];\n    const relevant = drawable_points.slice(state.start_index); // We only care about the points after draw start\n\n    const num_points = relevant.length;\n    const num_filled = d3.sum(relevant.map(d => d.y == null ? 0 : 1));\n\n    if (num_filled === 0) return \"unstarted\";\n    if (num_filled === num_points) return \"done\";\n    return \"in_progress\";\n\n  }\n\n  // Based on Dillon's code, redone, used to prevent \"jumping\" between gaps\n  // Could be replaced by a dense grid? (no, needed for the data to input connection)\n  function interpolate_gaps(line_data, maxGap) {\n    // If there is no data, return empty array early\n    if (!line_data.length) return [];\n\n    // Make a copy of the data and sort it from smallest x to largest x\n    // We copy it so we don't change the original data by accident (learned the hard way)\n    const sorted = line_data.slice().sort((a, b) => a.x - b.x);\n\n    // This will store our final interpolated result\n    const result = [];\n\n    // Loop through each adjacent pair of points\n    for (let i = 0; i < sorted.length - 1; i++) {\n      const p1 = sorted[i]; // current point\n      const p2 = sorted[i + 1]; // next point\n\n      // Always keep the current original point\n      result.push(p1);\n\n      // Find the distance between the two x-values\n      const gap = p2.x - p1.x;\n\n      // Figure out how many smaller sections we need\n      // This makes sure no section is bigger than maxGap\n      if (gap > maxGap) {\n        const steps = Math.ceil(gap / maxGap);\n\n        // Insert intermediate points between p1 and p2\n        for (let s = 1; s < steps; s++) {\n          // t tells us how far between p1 and p2 we are (from 0 to 1) (normalized)\n          const t = s / steps;\n\n          // Add interpolated point at proportional x position\n          // y is intentionally set to null bc this is a drawable point\n          result.push({\n            x: p1.x + t * gap,\n            y: null   // keep null so user fills it\n        });\n      }\n    }\n  }\n\n  // Push the final original point\n  // (Because loop stops before last element)\n  result.push(sorted[sorted.length - 1]);\n\n  return result;\n\n  }\n\n  // create an x_by which adjusts to size of the data\n  function get_dynamic_x_by(drawable_points) {\n    if (drawable_points.length < 2) return 0.01; // fallback for very few points\n\n    // Compute differences between consecutive x values\n    const diffs = [];\n\n    for (let i = 1; i < drawable_points.length; i++) {\n      diffs.push(drawable_points[i].x - drawable_points[i - 1].x);\n    }\n\n    // Take the median spacing (because outliers)\n    diffs.sort((a, b) => a - b);\n    const mid = Math.floor(diffs.length / 2);\n    const median_diff = diffs.length % 2 === 0\n    ? (diffs[mid - 1] + diffs[mid]) / 2\n    : diffs[mid];\n\n    // This can be adjusted but I think it looks best\n    return median_diff;\n  }\n\n  // This has been redone based on Dillon's adjustments (prevent gapping)\n  // Note: Redone again due to the new interpolation stuff\n  // This basically combines everything so we get the point-based drawable grid\n  function setup_drawable_points(state) {\n    const raw = state.line_data || [];\n\n    // Guard against no data\n    if (!raw.length) {\n      state.start_index = 0;\n      return [];\n    }\n\n    // Guard against nothing to interpolate\n    if (raw.length < 2) {\n      state.start_index = 0;\n      return raw.map(d => ({ x: d.x, y: null }));\n    }\n\n    // Make a copy and sort from smallest x to largest x\n      // Sorting may be redundant but I'd rather oversort and waste computation\n    // copy so we don’t change the original data\n    const sorted = raw.slice().sort((a, b) => a.x - b.x);\n\n    const smoother = state.smoother ?? 1;\n    // After sorting, deduplicate near-identical x values -------\n    const domain_range = sorted[sorted.length - 1].x - sorted[0].x; // Figure out how spread out the x values are in total\n    const DEDUP_EPS = (domain_range / sorted.length) * smoother; // Divide that range evenly across all points to get a share per point\n    //take that as our closeness threshold, anything closer than that gets treated as same x value\n    const deduped = [];\n    let group = [sorted[0]];\n\n    for (let i = 1; i < sorted.length; i++) {\n      // Is this point's x close enough to the group's anchor x to be a duplicate?\n      if (sorted[i].x - group[0].x < DEDUP_EPS) {\n        // If yes, shove it into the current group\n        group.push(sorted[i]);\n      }\n      else {\n        // If no, this is a genuinely different x location\n        // Collapse everything in the current group down to one point by averaging all their y values\n        const avgY = d3.mean(group, d => d.y);\n        deduped.push({ x: group[0].x, y: avgY });\n        // Start a fresh group with this point as the new anchor\n        group = [sorted[i]];\n      }\n    }\n    deduped.push({ x: group[0].x, y: d3.mean(group, d => d.y) });\n\n    // Guard against data too small after sort\n    if (deduped.length < 2) {\n      state.start_index = 0;\n      return deduped.map(d => ({ x: d.x, y: null }));\n    }\n\n    // Find the spacing between each pair of neighboring points\n    const gaps = [];\n    for (let i = 1; i < deduped.length; i++) {\n      gaps.push(deduped[i].x - deduped[i - 1].x);\n    }\n\n    // Guard against no valid gaps\n    if (!gaps.length) {\n      state.start_index = 0;\n      return deduped.map(d => ({ x: d.x, y: null }));\n    }\n\n    // Find the middle gap (median... because outliers)\n    // This helps us understand the \"normal\" spacing of the data\n    const medianGap = gaps.sort((a,b)=>a-b)[Math.floor(gaps.length/2)];\n\n    // Guard if invalid median\n    if (!isFinite(medianGap) || medianGap <= 0) {\n      state.start_index = 0;\n      return deduped.map(d => ({ x: d.x, y: null }));\n    }\n\n    // Allow gaps up to twice the normal spacing\n    // Bigger gaps will be filled in\n    const maxGap = medianGap * 2;\n    const interpolator = state.interpolator ?? null;\n\n    // Fill in large gaps with extra points, see interpolate_gaps function\n    let interpolated;\n    if (interpolator) {\n      interpolated = interpolate_gaps(deduped, interpolator);\n    }\n    else {\n      interpolated = interpolate_gaps(deduped, maxGap);\n    }\n\n    if (!interpolated.length) { // Interpolation failed or empty\n      interpolated = deduped;\n    }\n\n    // Remove any points that are too close together\n    // Google scared me about floating-point issues, so EPS is a very tiny number to avoid them\n    const EPS = 1e-9;\n    interpolated = interpolated.filter((d, i, arr) =>\n      i === 0 || (d.x - arr[i - 1].x) > EPS\n    );\n\n    if (!interpolated.length) { // One last check for edge cases\n      interpolated = deduped;\n    }\n\n    // Extend to full domain\n    const domain = state.x_domain || d3.extent(deduped, d => d.x);\n    // If Bad domain\n    if (!domain || !isFinite(domain[0]) || !isFinite(domain[1])) {\n      state.start_index = 0;\n      return [];\n    }\n    // get dynamic spacing\n    let step = get_dynamic_x_by(interpolated) || (domain[1] - domain[0]) / 100;\n\n    // If bad step\n    if (!isFinite(step) || step <= 0) {\n      step = (domain[1] - domain[0]) / 100;\n    }\n\n    if (!isFinite(step) || step <= 0) {\n      step = 0.01; // absolute fallback\n    }\n\n    const extended = [];\n\n    // LEFT EXTENSION (this was so hard)\n    let xLeft = interpolated[0].x;\n    let safetyL = 0; // Prevent infinite loops\n    while (xLeft > domain[0] && safetyL < 10000) {\n      safetyL++;\n      xLeft -= step;\n      if (xLeft >= domain[0]) {\n        extended.push({ x: xLeft, y: null });\n        }\n    }\n\n    extended.reverse(); // keep order increasing\n\n    // Middle (same as b4)\n    extended.push(...interpolated);\n\n    // Right\n    let xRight = interpolated[interpolated.length - 1].x;\n    let safetyR = 0;\n    while (xRight < domain[1] && safetyR < 10000) {\n      safetyR++;\n      xRight += step;\n      if (xRight <= domain[1]) {\n        extended.push({ x: xRight, y: null });\n      }\n    }\n\n    if (!extended.length || extended[0].x > domain[0]) {\n      extended.unshift({ x: domain[0], y: null });\n    }\n\n    if (extended[extended.length - 1].x < domain[1]) {\n      extended.push({ x: domain[1], y: null });\n    }\n\n    // Compute draw_start index\n    state.start_index = extended.findIndex(d => d.x >= state.draw_start);\n    if (state.start_index < 0) state.start_index = 0;\n\n    // initialize all as empty\n    return extended.map((d, i) => ({\n      x: d.x,\n      y: (i === state.start_index && state.pin_start)\n      ? d.y\n      : null\n    }));\n  }\n\n  function fill_in_closest_point(state, drag_x, drag_y) {\n    const { drawable_points } = state;\n    if (!drawable_points || !drawable_points.length) return;\n    let last_dist = Infinity;\n    let closest_index = drawable_points.length - 1;\n    const start_index = state.start_index;\n\n    for (let i = start_index; i < drawable_points.length; i++) {\n      const dist = Math.abs(drawable_points[i].x - drag_x);\n      if (dist > last_dist) {\n        closest_index = i - 1;\n        break;\n      }\n\n    last_dist = dist;\n  }\n  drawable_points[closest_index].y = drag_y;\n  }\n\n  function make_line_drawer(x, y) {\n    return d3.line()\n      .defined(d => d.y != null)\n      .x(d => x(+d.x))\n      .y(d => y(+d.y));\n  }\n\n// Drawing functions ---------------------\n\n  function draw_user_line(state) {\n    const { g, x, y } = state.plot;\n    const status = get_user_line_status(state);\n    const line_drawer = make_line_drawer(x, y);\n\n    const user_line = g.selectAll(\"path.user_line\").data(status === \"unstarted\" ? [] : [state.drawable_points]);\n    user_line.enter()\n      .append(\"path\")\n      .attr(\"class\", \"user_line\")\n      .merge(user_line)\n      .attr(\"fill\", \"none\")\n      .attr(\"stroke\", state.drawn_line_color || \"steelblue\")\n      .attr(\"stroke-width\", 4)\n      .attr(\"stroke-linejoin\", \"round\")\n      .attr(\"stroke-linecap\", \"round\")\n      .style(\"stroke-dasharray\", \"1,7\")\n      .attr(\"d\", line_drawer);\n\n    user_line.exit().remove();\n  }\n\n  function draw_rectangle(state) {\n    const { g, x, w, h, overlay } = state.plot; // Lot of stuff rewritten due to this const\n    const status = get_user_line_status(state);\n    let drawSpace = 0;\n\n    if (status === \"unstarted\") {\n      const startPoint = state.drawable_points[state.start_index];\n      if (!startPoint || !isFinite(startPoint.x)) {\n        drawSpace = 0;\n      }\n      else {\n        drawSpace = x(startPoint.x);\n      }\n    }\n\n    else if (status === \"done\") {\n      drawSpace = w + 10000;\n\n\n    } else { // This entire section was rewritten. This is what makes the yellow box move up to user line\n      const null_points = state.drawable_points\n        .slice(state.start_index)\n        .filter(d => d.y == null);\n      if (null_points.length) {\n        const dynamic_x_by = get_dynamic_x_by(state.drawable_points);\n        drawSpace = x(null_points[0].x - dynamic_x_by); // Uses dynamic x_by\n      }\n    }\n\n    drawSpace = Math.max(0, Math.min(w, drawSpace));\n\n    const draw_region = g.selectAll(\"rect.draw_region\").data([null]);\n\n    draw_region.enter()\n      .append(\"rect\")\n      .attr(\"class\", \"draw_region\")\n      .merge(draw_region)\n      .attr(\"x\", drawSpace)\n      .attr(\"width\", Math.max(0, w - drawSpace))\n      .attr(\"y\", 0)\n      .attr(\"height\", h)\n      .style(\"fill\", \"rgba(255,255,0,.8)\")\n      .style(\"fill-opacity\", 0.4)\n      overlay.raise(); // Key line, prevents overlay from sitting on bottom\n  }\n\n// Interaction ------------------------------\n  function attach_drag(state) {\n\n  const overlay = state.plot.overlay;\n\n  // Clear any previous drag listeners\n  overlay.on(\".drag\", null);\n\n  overlay.call(\n    d3.drag()\n      .on(\"start drag\", function (event) {\n\n        const [mx, my] = d3.pointer(event, state.plot.g.node());\n        const drag_x = state.plot.x.invert(mx);\n        const drag_y = state.plot.y.invert(my);\n\n        fill_in_closest_point(state, drag_x, drag_y);\n        draw_user_line(state);\n        draw_rectangle(state);\n      })\n      .on(\"end\", function () {\n        on_end(state);\n      })\n  );\n}\n\n  // \"on end\" behavior, basically whether we send to Shiny\n  function on_end(state) {\n    const line_status = get_user_line_status(state);\n\n    if (line_status !== \"done\") return;\n    if (state._sent_done) return;\n    state._sent_done = true;\n\n    // Render delayed layers dynamically\n    // After the user finishes drawing, show any layers that were supposed to appear at the end\n    if (state.delayed_layers) {\n      // Go through each layer that was saved earlier (refer to multiLayer.js)\n      state.delayed_layers.forEach(layer => {\n        const rendererName = \"render\" + capitalize(layer.geom_type) + \"Layer\";\n\n        // Look up that function on the global window object\n        const renderer = window[rendererName];\n\n        // If the function exists, call it to draw the layer\n        if (typeof renderer === \"function\") {\n          renderer(state.plot.svg, state.plot, layer);\n        }\n      });\n      // Clear the list so we don’t render them again\n      state.delayed_layers = [];\n    }\n\n    if (state.shiny_message_loc) {\n      if (typeof Shiny !== \"undefined\") {\n        setTimeout(() => {\n          const filled = state.drawable_points.filter(d => d.y != null);\n          Shiny.setInputValue(\n            state.shiny_message_loc,\n            {\n              x: filled.map(d => d.x),\n              y: filled.map(d => d.y)\n            },\n            { priority: \"event\" }\n            );\n\n          alert(\"Sending message to \" + state.shiny_message_loc); // Send an alert to where it's being sent\n          // Maybe not necessary? Good for testing\n        }, 50);  // short delay so delayed layers can render\n      }\n    }\n  }\n\n  function start(state) {\n    state._sent_done = false;\n    state.drawable_points = setup_drawable_points(state);\n    draw_user_line(state);\n    draw_rectangle(state);\n    attach_drag(state);\n  }\n\n  // Entry point called by youdrawitR to enable drawing on an existing plot\n  window.youdrawitAttachDrawit = function(svg, width, height, data, options) {\n    // \"Is there actually a graph here?\"\n    const plot = svg.node().__plot__;\n    if (!plot) return;\n\n    const state = ensureState(svg);\n\n    state.plot = plot;\n    state.line_data = rowsFrom(data); // Adjusted because of the gapping issue\n    options = options || {};\n    state.x_domain = options.x_domain || null;\n    state.smoother = options.smoother;\n    state.interpolator = options.interpolator || null;\n    state.pin_start = !!options.pin_start;\n    state.draw_start = options.draw_start != null\n      ? +options.draw_start\n      : plot.x.domain()[0];\n    state.x_by = options.x_by != null ? +options.x_by : 1;\n\n    state.drawn_line_color =\n      options.drawn_line_color ||\n      options.data_line_color ||\n      \"steelblue\";\n    // “If options.shiny_message_loc exists, store it in state.shiny_message_loc. Otherwise, store null”\n    state.shiny_message_loc = options.shiny_message_loc || null;\n\n    // This actually starts it\n    start(state);\n  };\n})();\nsvg = d3.select(svg.node());\n/* R2D3 Source File:  /Library/Frameworks/R.framework/Versions/4.5-x86_64/Resources/library/youdrawitR/d3/multiLayer.js */\n// This actually renders the plots, determining what is the \"initial\" and \"after\" plot\nconst labels = data.labels || {};\nconst scales = data.scales;\n\n// Note: data already normalized. Could add it here centrally? But works for window\n// check if title\nconst title = labels.title;\nconst subtitle = labels.subtitle;\n\nconst hasTitle = !!labels.title;\nconst hasSubtitle = !!labels.subtitle;\n\nconst titleBlockHeight =\n  (hasTitle ? 20 : 0) +\n  (hasSubtitle ? 15 : 0);\n\n\nconst margin = {\n  top: 20 + titleBlockHeight,\n  right: 20,\n  bottom: 55,\n  left: 55\n};\n\n// This used to be in depricated scatter.js\nconst innerW = width - margin.left - margin.right;\nconst innerH = height - margin.top - margin.bottom;\n\n// This is needed so that I can try to prevent hard coding...\nfunction capitalize(str) {\n  return str.charAt(0).toUpperCase() + str.slice(1);\n}\n\nconst g = svg.append(\"g\")\n  .attr(\"transform\", `translate(${margin.left},${margin.top})`);\n\nconst xScale = d3.scaleLinear().domain(scales.x_domain).range([0, innerW]);\n\nconst yScale = d3.scaleLinear().domain(scales.y_domain).range([innerH, 0]);\n\n// Axes\ng.append(\"g\")\n  .attr(\"transform\", `translate(0,${innerH})`)\n  .call(d3.axisBottom(xScale));\n\ng.append(\"g\")\n  .call(d3.axisLeft(yScale));\n\n// One overlay rect (the interaction layer)\nconst overlay = g.append(\"rect\")\n  .attr(\"class\", \"interaction\")\n  .attr(\"width\", innerW)\n  .attr(\"height\", innerH)\n  .attr(\"fill\", \"transparent\")\n  .style(\"pointer-events\", \"all\");\n\n// I'm tired of accidentally highlighting the axes\n// disable text selection and dragging effects on the SVG\nsvg.style(\"user-select\", \"none\")\n   .style(\"-webkit-user-select\", \"none\") // Chrome and Safari\n   .style(\"-moz-user-select\", \"none\") // Firefox\n   .style(\"-ms-user-select\", \"none\"); // Edge\n\n// Prevent pointer events from selecting axes text or lines\ng.selectAll(\"text, line\").style(\"pointer-events\", \"none\"); // \"don't highlight the axes\"\n\n// Axis labels\nif (labels.x) {\n  g.append(\"text\")\n    .attr(\"class\", \"x-label\")\n    .attr(\"x\", innerW / 2)\n    .attr(\"y\", innerH + 45)\n    .attr(\"text-anchor\", \"middle\")\n    .style(\"font-size\", \"12px\") // Make em smaller\n    .style(\"font-family\", \"sans-serif\") // Looks like ggplot\n    .text(labels.x);\n}\n\nif (labels.y) {\n  g.append(\"text\")\n    .attr(\"class\", \"y-label\")\n    .attr(\"transform\", \"rotate(-90)\")\n    .attr(\"x\", -innerH / 2)\n    .attr(\"y\", -40)\n    .attr(\"text-anchor\", \"middle\")\n    .style(\"font-size\", \"12px\")\n    .style(\"font-family\", \"sans-serif\")\n    .text(labels.y);\n}\n\n// Title/subtitles\nlet currentY = 15;\n\nif (title) {\n  svg.append(\"text\")\n    .attr(\"x\", margin.left)\n    .attr(\"y\", currentY)\n    .style(\"font-family\", \"sans-serif\")\n    .text(title);\n\n  currentY += 18;\n}\n\nif (subtitle) {\n  svg.append(\"text\")\n    .attr(\"x\", margin.left)\n    .attr(\"y\", currentY)\n    .style(\"font-size\", \"12px\") // smaller than title\n    .style(\"fill\", \"#4D4D4D\") // softer gray (closer to ggplot)\n    .style(\"font-family\", \"sans-serif\")\n    .text(subtitle);\n}\n\n\n// Publish plot context so drawit.js can attach behavior\n// -------------------------------\nconst plot = {\n  svg,\n  g,\n  overlay,\n  x: xScale,\n  y: yScale,\n  w: innerW,\n  h: innerH,\n  margin,\n  labels,\n  title,\n  subtitle\n};\n\nsvg.node().__plot__ = plot;\n\n// -------------------------------\n\n// Check if drawit state exists, and initialize only if needed\nlet state = null;\n\nif (options?.drawit) {\n  state = svg.node().__drawit__ || {};\n  state.delayed_layers = state.delayed_layers || [];\n  svg.node().__drawit__ = state;\n}\n\n// Layer render loop  (The LRL, if you will) (this is for the delayed rendering)\n(data.layers || []).forEach(layer => {\n\n  const rendererName = \"render\" + capitalize(layer.geom_type) + \"Layer\";\n  const renderer = window[rendererName];\n\n  if (typeof renderer !== \"function\") return;\n\n  // Delay if requested\n  if (options?.drawit && layer.show_on_finish) { // We don't want a show on finish for sketchit\n    const state = svg.node().__drawit__;\n    state.delayed_layers.push(layer);\n    return;   // DO NOT render now\n  }\n\n  // Otherwise render immediately :)\n  renderer(svg, plot, layer);\n});\n\n\n// ---------- Interaction modules\n\noptions.x_domain = scales.x_domain;\n\n// Attach drawit if called\nif (options?.drawit && window.youdrawitAttachDrawit) {\n  window.youdrawitAttachDrawit(\n    svg,\n    width,\n    height,\n    data.layers?.[0]?.data,\n    options\n  );\n}\n\n// Attach sketchit if called\nif (options?.sketchit && window.youdrawitAttachSketchit) {\n  window.youdrawitAttachSketchit(\n    svg,\n    width,\n    height,\n    data.layers?.[0]?.data,\n    options\n  );\n}\n};","style":[],"version":6,"theme":{"default":{"background":"#FFFFFF","foreground":"#000000"},"runtime":null},"useShadow":true},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</div>
+</section>
+<section id="drawit-key-parameters" class="slide level2">
+<h2><code>drawit()</code>: Key Parameters</h2>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Argument</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>draw_start</code></td>
+<td>Where drawing begins on the x-axis</td>
+</tr>
+<tr class="even">
+<td><code>show_on_finish</code></td>
+<td>Reveals the true line after drawing</td>
+</tr>
+<tr class="odd">
+<td><code>smoother</code></td>
+<td>Reduces jitter in the drawn path</td>
+</tr>
+<tr class="even">
+<td><code>interpolator</code></td>
+<td>Controls density of intermediate points</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="sketchit-freeform-drawing" class="slide level2">
+<h2><code>sketchit()</code>: Freeform Drawing</h2>
+<ul>
+<li>No one-to-one data matching required</li>
+<li>Users can draw <strong>multiple lines</strong></li>
+<li>Consistent experience regardless of data density</li>
+</ul>
+<div style="height: 350px; width: 500px; overflow: hidden; position: relative;">
+<div class="cell">
+<div class="cell-output-display">
+<div id="htmlwidget-dd4ebaaf1d9d107d51a2" style="width:400px;height:300px;" class="r2d3 html-widget"></div>
+<script type="application/json" data-for="htmlwidget-dd4ebaaf1d9d107d51a2">{"x":{"data":{"layers":[{"geom_type":"point","data":{"x":[2.62,2.875,2.32,3.215,3.44,3.46,3.57,3.19,3.15,3.44,3.44,4.07,3.73,3.78,5.25,5.424,5.345,2.2,1.615,1.835,2.465,3.52,3.435,3.84,3.845,1.935,2.14,1.513,3.17,2.77,3.57,2.78],"y":[21,21,22.8,21.4,18.7,18.1,14.3,24.4,22.8,19.2,17.8,16.4,17.3,15.2,10.4,10.4,14.7,32.4,30.4,33.9,21.5,15.5,15.2,13.3,19.2,27.3,26,30.4,15.8,19.7,15,21.4],"group":[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],"shape":[19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19],"colour":["black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black"],"fill":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"size":[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],"alpha":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null]},"aes_params":{},"geom_params":{"na.rm":false}}],"labels":{"x":"Weight","y":"Miles Per Gallon"},"scales":{"x_domain":[1.513,5.424],"y_domain":[10.4,33.9]}},"type":"list","container":"svg","options":{"sketchit":true,"color_options":true,"starting_color":null,"palette":null,"stroke_width":2,"shiny_message_loc":null,"button_position":[1,1],"max_lines":null,"min_lines":null},"script":"var d3Script = function(d3, r2d3, data, svg, width, height, options, theme, console) {\nthis.d3 = d3;\n/* R2D3 Source File:  /Library/Frameworks/R.framework/Versions/4.5-x86_64/Resources/library/youdrawitR/d3/point.js */\nwindow.renderPointLayer = function(svg, plot, layer) {\n\n  const g = plot.g;\n  const xScale = plot.x;\n  const yScale = plot.y;\n\n  // Normalize data\n  function asRows(x) {\n    if (Array.isArray(x)) return x;\n    if (x && typeof x === \"object\") {\n      const cols = Object.keys(x);\n      if (!cols.length) return [];\n      const n = Array.isArray(x[cols[0]]) ? x[cols[0]].length : 0;\n      return d3.range(n).map(i => {\n        const row = {};\n        cols.forEach(k => row[k] = Array.isArray(x[k]) ? x[k][i] : x[k]);\n        return row;\n      });\n    }\n    return [];\n  }\n\n  // Handle missing data\n  const pts = asRows(layer.data).filter(d => {\n    return (\n      d.x != null && !isNaN(d.x) &&\n      d.y != null && !isNaN(d.y)\n      );\n  });\n\n  const rDefault = layer.aes_params?.size ?? 3;\n  const alphaDefault = layer.aes_params?.alpha ?? 1;\n\n  g.append(\"g\")\n    .attr(\"class\", \"geom-point\")\n    .selectAll(\"circle\")\n    .data(pts)\n    .enter()\n    .append(\"circle\")\n    .attr(\"cx\", d => xScale(d.x))\n    .attr(\"cy\", d => yScale(d.y))\n    .attr(\"r\", d => d.size ? (+d.size * 3) : rDefault)\n    .attr(\"fill\", d => d.colour || layer.aes_params?.colour || \"black\")\n    .attr(\"opacity\", d => d.alpha != null ? d.alpha : alphaDefault);\n\n};\n\n/* R2D3 Source File:  /Library/Frameworks/R.framework/Versions/4.5-x86_64/Resources/library/youdrawitR/d3/sketchit.js */\n(function() {\n  // This uses push and pop a lot:\n    // push: adds something to the end of an array\n    // pop: removes something from the end of an array\n    // (Not really a need to do anything in the middle)\n\n  // Fix the drawing bug\n\n  // Attach sketchit state to the SVG DOM node\n  function ensureState(svg) {\n    const root = svg.node();\n    root.__sketchit__ = root.__sketchit__ || {};\n    return root.__sketchit__;\n  }\n\n  // Sketchit calls window first instead of at the end, and includes the functions inside\n    // This helps keep each sketch separate\n    // The helpers like undo can access the current sketch to know what to do\n  window.youdrawitAttachSketchit = function(svg, width, height, data, options = {}) {\n    // \"Is there actually a graph here?\"\n    const plot = svg.node().__plot__;\n    if (!plot) return;\n\n    const state = ensureState(svg);\n\n    state.plot = plot;\n\n    const { overlay, g, x: xScale, y: yScale } = plot;\n    overlay.raise(); // Key line\n\n    state.paths = [];\n    state.currentPath = null;\n    state.currentData = [];\n    state.isDrawing = true; // initially allow drawing\n    state.isDone = false; // flag for \"Done\"\n    state.strokeWidth = options.stroke_width || 2;\n    // These are for the Shiny implementation\n    state.completedLines = [];\n    state.maxLines = options.max_lines ?? Infinity;\n    state.minLines = options.min_lines ?? 1;\n    state.drawOrderCounter = 0;\n    state.shiny_message_loc = options.shiny_message_loc;\n\n\n    // This is the actual drawing function\n    function startNewLine(color) {\n      if (state.isDone) return;  // prevent drawing if done\n\n      if (state.completedLines.length >= state.maxLines) {\n        showMessage(`Maximum of ${state.maxLines} lines reached.`);\n        return;\n      }\n\n      state.currentColor = color || state.currentColor;\n      state.currentData = [];\n      state.currentPath = g.append(\"path\")\n        .attr(\"fill\", \"none\")\n        .attr(\"stroke\", state.currentColor)\n        .attr(\"stroke-width\", state.strokeWidth)\n        .attr(\"stroke-linecap\", \"round\")\n        .attr(\"stroke-linejoin\", \"round\") // Make ends of lines round\n        .style(\"pointer-events\", \"none\");\n      state.paths.push(state.currentPath);\n    }\n\n    // Undo function, used with undo button\n    function undoLastLine() {\n      if (state.isDone) return; // prevent undoing if done\n      if (state.paths.length === 0) return; // if there's nothing to undo...\n\n      // Undo the last line (if there is something to undo)\n      const last = state.paths.pop();\n      last.remove();\n\n      // remove the undid lines from shiny data\n      state.completedLines.pop();\n    }\n\n    // Done function, used with done button (see drag behavior also)\n    function doneDrawing() {\n      if (state.completedLines.length < state.minLines) {\n        showMessage(`Draw at least ${state.minLines} line(s) before finishing.`);\n        return;\n      }\n\n      state.isDone = true; // send on done\n\n      // make the Done button red on click\n      if (state.doneButton) {\n        state.doneButton.select(\"rect\").style(\"fill\", \"red\");\n      }\n\n      // This is done a little different from drawit since there's no need for a drawable_points thing\n      if (state.shiny_message_loc && typeof Shiny !== \"undefined\") {\n        setTimeout(() => {\n          const x = [];\n          const y = [];\n          const color = [];\n          // Order is historical time sequence\n            // Ex. draw blue line, draw red, undo red, draw green\n              // blue has line_id = 1, order = 0\n              // green has line_id = 2, order = 2\n          const order = []; // probably not necessary? Might be useful to include\n          const line_id = [];\n\n        // iterate through the lines\n        state.completedLines.forEach((line, i) => {\n          for (let j = 0; j < line.x.length; j++) {\n            x.push(line.x[j]);\n            y.push(line.y[j]);\n            color.push(line.color);\n            order.push(line.order);\n            line_id.push(i + 1); // just simple line numbering, see above\n          }\n        });\n\n        // This is already in data scale\n        Shiny.setInputValue(\n          state.shiny_message_loc,\n          {\n            x: x,\n            y: y,\n            color: color,\n            order: order,\n            line_id: line_id\n\n          },\n          { priority: \"event\" }\n          );\n          alert(\"Sending message to \" + state.shiny_message_loc);\n        });\n\n      }\n    }\n\n    // Reset function, used with reset button\n    function resetDrawing() {\n      if (state.isDone) return; // prevent resetting if done\n      state.paths.forEach(p => p.remove()); // get rid of everything\n      state.paths = [];\n      state.currentData = [];\n      state.currentPath = null;\n      state.isDrawing = false;\n\n      // for Shiny functionality, eliminate all line data\n      state.completedLines = [];\n      state.drawOrderCounter = 0;\n    }\n\n    // Messaging function -----------\n    function showMessage(text) {\n      // remove old message if exists\n      svg.selectAll(\".sketchit-message\").remove();\n\n      const msg = svg.append(\"g\")\n        .attr(\"class\", \"sketchit-message\");\n\n        msg.append(\"rect\")\n          .attr(\"x\", width / 2 - 120)\n          .attr(\"y\", 10)\n          .attr(\"width\", 240)\n          .attr(\"height\", 30)\n          .attr(\"rx\", 6)\n          .style(\"fill\", \"#333\")\n          .style(\"opacity\", 0.9);\n\n        msg.append(\"text\")\n          .attr(\"x\", width / 2)\n          .attr(\"y\", 30)\n          .attr(\"text-anchor\", \"middle\")\n          .attr(\"fill\", \"white\")\n          .style(\"font-size\", \"12px\")\n          .style(\"font-family\", \"sans-serif\")\n          .text(text);\n\n      // fade out\n      setTimeout(() => {\n        msg.transition()\n          .duration(500)\n          .style(\"opacity\", 0)\n          .remove();\n      }, 2000);\n}\n\n    // Buttons --------------------------------------------\n    if (!state.buttonGroup) {\n\n      const buttonWidth = 60;\n      const padding = 15;\n\n      if (options.button_position && options.button_position.length === 2) {\n        const bx = Math.max(0, Math.min(1, options.button_position[0])); //Snap to 0 or 1 if too big/small\n        const by = Math.max(0, Math.min(1, options.button_position[1]));\n\n        buttonX = padding + bx * (width - buttonWidth - 2 * padding);\n        buttonY = padding + (1 - by) * (height - 105 - 2 * padding);\n      }\n\n      const buttonGroup = svg.append(\"g\").attr(\"class\", \"sketchit-buttons\");\n\n      // Undo button -------\n      const undoButton = buttonGroup.append(\"g\")\n        .attr(\"transform\", `translate(${buttonX}, ${buttonY})`)\n        .style(\"cursor\", \"pointer\")\n        .on(\"click\", undoLastLine);\n\n      undoButton.append(\"rect\")\n        .attr(\"width\", 60)\n        .attr(\"height\", 25)\n        .attr(\"rx\", 5)\n        .attr(\"ry\", 5)\n        .style(\"fill\", \"#ECECEC\")\n        .style(\"stroke\", \"black\")\n        .style(\"stroke-width\", 2);\n\n      undoButton.append(\"text\")\n        .attr(\"x\", 30)\n        .attr(\"y\", 15)\n        .attr(\"text-anchor\", \"middle\")\n        .attr(\"alignment-baseline\", \"middle\")\n        .attr(\"font-size\", 14)\n        .style(\"font-family\", \"sans-serif\")\n        .text(\"Undo\");\n\n      // Reset button -------\n      const resetButton = buttonGroup.append(\"g\")\n        .attr(\"transform\", `translate(${buttonX}, ${buttonY + 35})`)\n        .style(\"cursor\", \"pointer\")\n        .on(\"click\", resetDrawing);\n\n      resetButton.append(\"rect\")\n        .attr(\"width\", 60)\n        .attr(\"height\", 25)\n        .attr(\"rx\", 5)\n        .attr(\"ry\", 5)\n        .style(\"fill\", \"#ECECEC\")\n        .style(\"stroke\", \"black\")\n        .style(\"stroke-width\", 2);\n\n      resetButton.append(\"text\")\n        .attr(\"x\", 30)\n        .attr(\"y\", 15)\n        .attr(\"text-anchor\", \"middle\")\n        .attr(\"alignment-baseline\", \"middle\")\n        .attr(\"font-size\", 14)\n        .style(\"font-family\", \"sans-serif\")\n        .text(\"Reset\");\n\n      // Done button -------\n      const doneButton = buttonGroup.append(\"g\")\n        .attr(\"transform\", `translate(${buttonX}, ${buttonY + 70})`)\n        .style(\"cursor\", \"pointer\")\n        .on(\"click\", () => {\n          doneDrawing();\n        });\n\n      state.doneButton = doneButton;\n\n      doneButton.append(\"rect\")\n        .attr(\"width\", 60)\n        .attr(\"height\", 25)\n        .attr(\"rx\", 5)\n        .attr(\"ry\", 5)\n        .style(\"fill\", \"#ECECEC\")\n        .style(\"stroke\", \"black\")\n        .style(\"stroke-width\", 2);\n\n      doneButton.append(\"text\")\n        .attr(\"x\", 30)\n        .attr(\"y\", 15)\n        .attr(\"text-anchor\", \"middle\")\n        .attr(\"alignment-baseline\", \"middle\")\n        .attr(\"font-size\", 14)\n        .style(\"font-family\", \"sans-serif\")\n        .text(\"Done\");\n\n      // Color palette buttons -------\n      if (options.color_options) {\n\n        let palette = (options.palette && options.palette.length > 0)\n        ? [...options.palette] // start with user-given palette\n        : [\"steelblue\", \"orange\", \"green\", \"red\"]; // switch to default if needed\n\n        // Add starting_color if given, or take the first from palette\n        const starting = options.starting_color ?? palette[0];\n\n        // Add the starting color to the pallet if it's not there yet\n        if (!palette.includes(starting)) {\n          palette.unshift(starting); // \"add to start of array\"\n          }\n\n        // Ensure only unique colors\n        palette = Array.from(new Set(palette)); // This is just a js trick I found. It's essentially just unique()\n\n        // Set drawing color\n        state.currentColor = starting;\n\n        // Layout variables\n        const squareSize = 12;\n        const spacing = 2;   // space between squares\n        const colorsPerRow = 4;\n\n        // Figure out how many rows and columns we need for our color squares to prevent crowding\n        palette.forEach((c, i) => {\n          const col = i % colorsPerRow;\n          const row = Math.floor(i / colorsPerRow);\n\n          buttonGroup.append(\"rect\")\n            .attr(\"class\", \"color-button\")\n            .attr(\"x\", buttonX + 3 + col * (squareSize + spacing))\n            .attr(\"y\", buttonY + 105 + row * (squareSize + spacing))\n            .attr(\"width\", squareSize)\n            .attr(\"height\", squareSize)\n            .style(\"fill\", c)\n            .style(\"stroke\", \"#666\")\n            .style(\"stroke-width\", c === state.currentColor ? 2 : 1) // bold first color button to indicate selection\n            .style(\"cursor\", \"pointer\")\n            .on(\"click\", function() {\n              state.currentColor = c; // set color based on click of color button\n\n              state.buttonGroup.selectAll(\".color-button\")\n                .style(\"stroke-width\", 1); // reset\n\n              d3.select(this)\n                .style(\"stroke-width\", 2); // bold clicked\n            });\n\n        });\n      }\n      // Starting color if no color option palette\n      else {\n        state.currentColor = options.starting_color ?? \"steelblue\";\n      }\n\n      state.buttonGroup = buttonGroup; // Don't delete this\n    }\n\n    // On drag functionality\n    overlay.on(\".drag\", null);\n\n    overlay.call(\n      d3.drag()\n        .on(\"start\", function(event) {\n          if (state.isDone) return;\n\n          if (state.completedLines.length >= state.maxLines) {\n            showMessage(`Maximum of ${state.maxLines} lines reached.`);\n            return;\n          }\n\n          startNewLine(); // always start a new line on drag\n          const [mx, my] = d3.pointer(event, g.node())\n          state.currentData.push({ x: xScale.invert(mx), y: yScale.invert(my) });\n        })\n        .on(\"drag\", function(event) {\n          if (state.isDone || !state.currentPath) return;\n          const [mx, my] = d3.pointer(event, g.node()) ;\n          state.currentData.push({ x: xScale.invert(mx), y: yScale.invert(my) });\n\n          const line = d3.line()\n            .x(d => xScale(d.x))\n            .y(d => yScale(d.y));\n\n          state.currentPath.attr(\"d\", line(state.currentData));\n        })\n        // This is the end functionality, see the done button functionality\n        .on(\"end\", function() {\n          if (state.currentData.length > 0) {\n\n            state.completedLines.push({\n              order: state.drawOrderCounter++,\n              color: state.currentColor,\n              x: state.currentData.map(d => d.x),\n              y: state.currentData.map(d => d.y)\n            });\n          }\n\n          state.currentPath = null;\n          state.currentData = [];\n\n        })\n        );\n  };\n})();\nsvg = d3.select(svg.node());\n/* R2D3 Source File:  /Library/Frameworks/R.framework/Versions/4.5-x86_64/Resources/library/youdrawitR/d3/multiLayer.js */\n// This actually renders the plots, determining what is the \"initial\" and \"after\" plot\nconst labels = data.labels || {};\nconst scales = data.scales;\n\n// Note: data already normalized. Could add it here centrally? But works for window\n// check if title\nconst title = labels.title;\nconst subtitle = labels.subtitle;\n\nconst hasTitle = !!labels.title;\nconst hasSubtitle = !!labels.subtitle;\n\nconst titleBlockHeight =\n  (hasTitle ? 20 : 0) +\n  (hasSubtitle ? 15 : 0);\n\n\nconst margin = {\n  top: 20 + titleBlockHeight,\n  right: 20,\n  bottom: 55,\n  left: 55\n};\n\n// This used to be in depricated scatter.js\nconst innerW = width - margin.left - margin.right;\nconst innerH = height - margin.top - margin.bottom;\n\n// This is needed so that I can try to prevent hard coding...\nfunction capitalize(str) {\n  return str.charAt(0).toUpperCase() + str.slice(1);\n}\n\nconst g = svg.append(\"g\")\n  .attr(\"transform\", `translate(${margin.left},${margin.top})`);\n\nconst xScale = d3.scaleLinear().domain(scales.x_domain).range([0, innerW]);\n\nconst yScale = d3.scaleLinear().domain(scales.y_domain).range([innerH, 0]);\n\n// Axes\ng.append(\"g\")\n  .attr(\"transform\", `translate(0,${innerH})`)\n  .call(d3.axisBottom(xScale));\n\ng.append(\"g\")\n  .call(d3.axisLeft(yScale));\n\n// One overlay rect (the interaction layer)\nconst overlay = g.append(\"rect\")\n  .attr(\"class\", \"interaction\")\n  .attr(\"width\", innerW)\n  .attr(\"height\", innerH)\n  .attr(\"fill\", \"transparent\")\n  .style(\"pointer-events\", \"all\");\n\n// I'm tired of accidentally highlighting the axes\n// disable text selection and dragging effects on the SVG\nsvg.style(\"user-select\", \"none\")\n   .style(\"-webkit-user-select\", \"none\") // Chrome and Safari\n   .style(\"-moz-user-select\", \"none\") // Firefox\n   .style(\"-ms-user-select\", \"none\"); // Edge\n\n// Prevent pointer events from selecting axes text or lines\ng.selectAll(\"text, line\").style(\"pointer-events\", \"none\"); // \"don't highlight the axes\"\n\n// Axis labels\nif (labels.x) {\n  g.append(\"text\")\n    .attr(\"class\", \"x-label\")\n    .attr(\"x\", innerW / 2)\n    .attr(\"y\", innerH + 45)\n    .attr(\"text-anchor\", \"middle\")\n    .style(\"font-size\", \"12px\") // Make em smaller\n    .style(\"font-family\", \"sans-serif\") // Looks like ggplot\n    .text(labels.x);\n}\n\nif (labels.y) {\n  g.append(\"text\")\n    .attr(\"class\", \"y-label\")\n    .attr(\"transform\", \"rotate(-90)\")\n    .attr(\"x\", -innerH / 2)\n    .attr(\"y\", -40)\n    .attr(\"text-anchor\", \"middle\")\n    .style(\"font-size\", \"12px\")\n    .style(\"font-family\", \"sans-serif\")\n    .text(labels.y);\n}\n\n// Title/subtitles\nlet currentY = 15;\n\nif (title) {\n  svg.append(\"text\")\n    .attr(\"x\", margin.left)\n    .attr(\"y\", currentY)\n    .style(\"font-family\", \"sans-serif\")\n    .text(title);\n\n  currentY += 18;\n}\n\nif (subtitle) {\n  svg.append(\"text\")\n    .attr(\"x\", margin.left)\n    .attr(\"y\", currentY)\n    .style(\"font-size\", \"12px\") // smaller than title\n    .style(\"fill\", \"#4D4D4D\") // softer gray (closer to ggplot)\n    .style(\"font-family\", \"sans-serif\")\n    .text(subtitle);\n}\n\n\n// Publish plot context so drawit.js can attach behavior\n// -------------------------------\nconst plot = {\n  svg,\n  g,\n  overlay,\n  x: xScale,\n  y: yScale,\n  w: innerW,\n  h: innerH,\n  margin,\n  labels,\n  title,\n  subtitle\n};\n\nsvg.node().__plot__ = plot;\n\n// -------------------------------\n\n// Check if drawit state exists, and initialize only if needed\nlet state = null;\n\nif (options?.drawit) {\n  state = svg.node().__drawit__ || {};\n  state.delayed_layers = state.delayed_layers || [];\n  svg.node().__drawit__ = state;\n}\n\n// Layer render loop  (The LRL, if you will) (this is for the delayed rendering)\n(data.layers || []).forEach(layer => {\n\n  const rendererName = \"render\" + capitalize(layer.geom_type) + \"Layer\";\n  const renderer = window[rendererName];\n\n  if (typeof renderer !== \"function\") return;\n\n  // Delay if requested\n  if (options?.drawit && layer.show_on_finish) { // We don't want a show on finish for sketchit\n    const state = svg.node().__drawit__;\n    state.delayed_layers.push(layer);\n    return;   // DO NOT render now\n  }\n\n  // Otherwise render immediately :)\n  renderer(svg, plot, layer);\n});\n\n\n// ---------- Interaction modules\n\noptions.x_domain = scales.x_domain;\n\n// Attach drawit if called\nif (options?.drawit && window.youdrawitAttachDrawit) {\n  window.youdrawitAttachDrawit(\n    svg,\n    width,\n    height,\n    data.layers?.[0]?.data,\n    options\n  );\n}\n\n// Attach sketchit if called\nif (options?.sketchit && window.youdrawitAttachSketchit) {\n  window.youdrawitAttachSketchit(\n    svg,\n    width,\n    height,\n    data.layers?.[0]?.data,\n    options\n  );\n}\n};","style":[],"version":6,"theme":{"default":{"background":"#FFFFFF","foreground":"#000000"},"runtime":null},"useShadow":true},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</div>
+</section>
+<section id="sketchit-key-parameters" class="slide level2">
+<h2><code>sketchit()</code>: Key Parameters</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Argument</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>palette</code></td>
+<td>Set of colors available for drawing</td>
+</tr>
+<tr class="even">
+<td><code>starting_color</code></td>
+<td>Initial drawing color</td>
+</tr>
+<tr class="odd">
+<td><code>button_position</code></td>
+<td>Position of control interface (to avoid overlapping data)</td>
+</tr>
+<tr class="even">
+<td><code>min_lines</code> / <code>max_lines</code></td>
+<td>Controls the number of lines the user can draw</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="shiny-integration" class="slide level2">
+<h2>Shiny Integration</h2>
+<p>Both functions work inside Shiny apps and return user-drawn data as a reactive tibble:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a>res <span class="ot">&lt;-</span> <span class="fu">drawit</span>(p, <span class="at">shiny_message_loc =</span> <span class="st">"my_input"</span>)</span>
+<span id="cb2-2"><a href=""></a></span>
+<span id="cb2-3"><a href=""></a><span class="co"># res$youdrawit_plot -&gt; the widget</span></span>
+<span id="cb2-4"><a href=""></a><span class="co"># res$points() -&gt; reactive tibble of drawn (x, y) values</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Captured data aligns with original x-values, ready for <strong>merging and analysis</strong>.</p>
+</section>
+<section id="the-bigger-picture-an-interactive-grammar" class="slide level2">
+<h2>The Bigger Picture: An Interactive Grammar</h2>
+<p><code>youdrawitR</code> treats interactivity as a <strong>grammatical layer</strong> added to a plot just as easily as a geom or theme.</p>
+<p>This lowers the barrier and keeps researchers within familiar <code>ggplot2</code> syntax.</p>
+</section>
+<section id="whats-next" class="slide level2">
+<h2>What’s Next</h2>
+<ul>
+<li>Extend beyond scatterplots bar charts, histograms, line charts</li>
+<li><strong>Python support</strong> via <code>plotnine</code> integration</li>
+<li>CRAN release</li>
+</ul>
+</section>
+<section id="thank-you" class="slide level2">
+<h2>Thank You!</h2>
+<p><em>Questions?</em></p>
+
+</section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<p><img src="images/logo.avif" class="slide-logo"></p>
+<div class="footer footer-default">
+
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="Presentation_files/libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="Presentation_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="Presentation_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="Presentation_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="Presentation_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="Presentation_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="Presentation_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="Presentation_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="Presentation_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="Presentation_files/libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: false,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1050,
+
+        height: 700,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+            const codeEl = trigger.previousElementSibling.cloneNode(true);
+            for (const childEl of codeEl.children) {
+              if (isCodeAnnotation(childEl)) {
+                childEl.remove();
+              }
+            }
+            return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>

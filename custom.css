@@ -1,0 +1,25 @@
+.reveal .title {
+  margin-top: 200px;
+  font-size: 2em;
+}
+
+.reveal .slide-logo {
+  height: 110px !important;
+  width: 300px;
+  max-height: 110px !important;
+  position: fixed !important;
+  bottom: -30px !important;
+  right: -20px !important;
+}
+
+.reveal section > div[style*="height"] {
+  overflow: hidden !important;
+  position: relative !important;
+  flex-shrink: 0 !important;
+}
+
+.reveal section > div[style*="height"] .html-widget {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+}
