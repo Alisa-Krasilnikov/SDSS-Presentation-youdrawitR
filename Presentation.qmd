@@ -1,10 +1,14 @@
 ---
-title: "**youdrawitR**: Integrating Interactive Graphical Testing into the **ggplot2** Ecosystem"
-author: "Alisa Krasilnikov, Dr. Emily Robinson"
+title: "`youdrawitR`: Integrating Interactive Graphical Testing into the **ggplot2** Ecosystem"
+author: "Alisa Krasilnikov, Dr. Emily Robinson, Dillon Murphy"
+bibliography: references.bib
+nocite: |
+  @*
 format:
   revealjs:
     css: custom.css
     logo: images/logo.avif
+    embed-resources: true
 reveal-options:
   transition: fade
   slideNumber: true
@@ -32,39 +36,65 @@ Reveal.on('slidechanged', function(event) {
 });
 ```
 
-## How do people actually read graphs?
+## Graphs are Statistical Tools
 
 - Visualization turns raw data into accessible narratives
-- But **how accurately** do people interpret what they see?
-- Research shows judgments like "fitting a line by eye" are:
-  - Systematically **biased**
-  - Yet remarkably **consistent** across individuals
+- Graphs and charts are everywhere
+  - Statistical charts are a central way people engage with data
+
+  
+## How do people actually read graphs?
+
+- Decisions made "by eye" [@robinson2023_eye_fitting]
+  - COVID-19 graphs [@schneider2024crisis]
+- Important to convey information correctly
+- Different designs can lead to different interpretations 
+
+## Graphical testing
+
+- `Explicit` and `implicit` [@Vanderplas2020]
+  - **Explicit:** Answer specific questions about a graph
+  - **Implicit:** Have the user infer the question
+- Statistical lineups – `nullabor` package [@nullabor]
+
+
+![](images/clusters.png){fig-align="center"}
 
 ## The "You Draw It" Idea
-
-- Introduced by the **New York Times** in 2015
-- Show viewers part of a trend + ask them to **draw the rest**
+:::: {.columns}
+::: {.column width="50%"}
+- Introduced by the **New York Times**
+- Show viewers part of a trend + ask them to **draw the rest** [@katz2017you_draw_it]
 - Reveals assumptions, biases, and engagement in a way passive charts cannot
+:::
+::: {.column width="50%"}
+![](images/NYT Task.png)
+:::
+::::
 
-> *What if we could bring this into R?*
+## `youdrawitR` for Graphical Testing
 
-## youdrawitR as a Graphical Testing Tool
-
-- Originally created by Dr. Emily Robinson
+- Originally modified by Dr. Emily Robinson
+  - Testing perception of log vs. linear scales [@Robinson2022_dissertation]
   - Designed to render within Shiny to receive user input
 - Built as an R package by Dillon Murphy
 
+![](images/Dr. Robinson Task.png){fig-align="center"}
+
 ## The Problem with the Old `youdrawitR`
 
-- Required knowledge of **JavaScript and D3**
-- Not accessible to the broader R community
+- Not accessible to broader R community of graphics researchers
 - Not easily extensible to new plot types + other aesthetic features
 
-The statistical visualization community works in **`ggplot2`**, so why should interactive testing be any different?
+## The new `youdrawitR`
 
-## Our Solution: A ggplot2-Native Interface
+![](images/youdrawitR documentation.png)
+
+## **Solution:** A `ggplot2`-Native Interface
 
 ```r
+library(youdrawitR)
+
 (ggplot(data = mtcars, aes(x = wt, y = mpg)) +
   geom_point() +
   labs(x = "Weight", y = "Miles Per Gallon")) |> 
@@ -74,15 +104,67 @@ drawit()
 - No JavaScript required
 - Interactivity as a **layer**, just like a geom or theme
 
+The statistical visualization community works in **`ggplot2`**, so why should interactive testing be any different?
+
+## r2d3 
+[@r2d3]
+
+```r
+  youdrawit_plot <- r2d3(
+    data = payload,
+    script = system.file("d3/multiLayer.js", package = "youdrawitR"),
+    dependencies = deps,
+    options = options,
+    width = width,
+    height = height
+  )
+```
+
+- Takes in data from R
+- Passes through JavaScript D3 file
+- Outputs htmlwidget
+
 ## Restructuring of `youdrawitR`
 
-![](images/workflowFinal.png)
+![](images/workflowFinal.png){fig-align="center"}
 
 ## Restructuring of `youdrawitR`
+:::: {.columns}
+::: {.column width="50%"}
+![](images/multiLayer.png)
+:::
 
-![](images/multiLayer.png){fig-align="center"}
+::: {.column width="50%" style="font-size: 0.5em;"}
+```js
+// Layer render loop 
+(data.layers || []).forEach(layer => {
 
----
+  const rendererName = "render" + capitalize(layer.geom_type) + "Layer";
+  const renderer = window[rendererName];
+
+  if (typeof renderer !== "function") return;
+  
+  ...
+  
+  renderer(svg, plot, layer);
+});
+
+...
+
+// Attach drawit if called
+if (options?.drawit && window.youdrawitAttachDrawit) {
+  window.youdrawitAttachDrawit(
+    svg,
+    width,
+    height,
+    data.layers?.[0]?.data,
+    options
+  );
+}
+...
+```
+:::
+::::
 
 ## Restructuring of `youdrawitR`
 
@@ -92,16 +174,16 @@ drawit()
 
 - User draws a predicted trend across a **highlighted region**
 - Designed for **one-to-one** x-y matching
-- Useful for: forecasting tasks, graphical testing, education
+- Useful for: regressions, forecasting tasks, reveals of true trend
 
 ::: {style="height: 350px; width: 500px; overflow: hidden; position: relative;"}
 ```{r}
 #| echo: false
-(ggplot(data = mtcars, aes(x = wt, y = mpg)) +
+(ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm)) +
   geom_point() +
   geom_smooth(method = "lm") +
-  labs(x = "Weight", y = "Miles Per Gallon")) |>
-  drawit(height = 300, width = 400, smoother = 0.5, show_on_finish = TRUE)
+  labs(x = "Bill Length (mm)", y = "Bill Depth (mm)")) |>
+  drawit(height = 300, width = 400, smoother = 2, show_on_finish = TRUE)
 ```
 :::
 
@@ -123,9 +205,9 @@ drawit()
 ::: {style="height: 350px; width: 500px; overflow: hidden; position: relative;"}
 ```{r}
 #| echo: false
-(ggplot(data = mtcars, aes(x = wt, y = mpg)) +
+(ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm)) +
   geom_point() +
-  labs(x = "Weight", y = "Miles Per Gallon")) |>
+  labs(x = "Bill Length (mm)", y = "Bill_Depth (mm)"))  |>
   sketchit(height = 300, width = 400)
 ```
 :::
@@ -153,6 +235,14 @@ res <- drawit(p, shiny_message_loc = "my_input")
 
 Captured data aligns with original x-values, ready for **merging and analysis**.
 
+::: {layout-ncol=3}
+![](images/sketchit-cat.png)
+
+![](images/tibble.png)
+
+![](images/ggplot-sketch.png)
+:::
+
 ## The Bigger Picture: An Interactive Grammar
 
 `youdrawitR` treats interactivity as a **grammatical layer**
@@ -160,12 +250,54 @@ added to a plot just as easily as a geom or theme.
 
 This lowers the barrier and keeps researchers within familiar `ggplot2` syntax.
 
+::: {layout-ncol=2}
+![](images/ggplot-mtcars.png){style="height:300px; width:auto;"}
+
+![](images/drawit-mtcars.png){style="height:300px; width:auto;"}
+:::
+
+## Usability Testing
+
+- Recruited 10 participants
+  - Familiar with `ggplot2`
+  - Backgrounds primarily in graphical testing and education
+  
+- Thinkaloud + Semi-structured interview
+- User vs. **Implementer**
+
+## Usability Testing
+
+- People found it easy to use and intuitive
+- Had reasons to use it 
+- Wanted some features: 
+  - Exporting with drawing
+  - Data tracking in non-Shiny environment
+
 ## What's Next
 
-- Extend beyond scatterplots bar charts, histograms, line charts
+- Extend geometry: bar charts, histograms, boxplots, etc. 
+  - Particularly interested in maps
 - **Python support** via `plotnine` integration
 - CRAN release
 
 ## Thank You!
 
+:::: {.columns}
+::: {.column width="30%"}
+![](images/logo.png){width=200px}
+:::
+::: {.column width="70%"}
+Email:
+  `alisa.krass@gmail.com`
+Documentation: 
+  `https://alisa-krasilnikov.github.io/youdrawitR/`
+
 *Questions?*
+:::
+::::
+
+## References 
+::: {style="font-size: 0.7em;"}
+::: {#refs}
+:::
+:::
