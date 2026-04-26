@@ -26,9 +26,23 @@
 
 /* Scale the widget visually instead of resizing the htmlwidget itself */
 .widgetscale {
-  transform: scale(0.73);
-  transform-origin: top left;
-  width: calc(100% / 0.73);
+  transform: scale(0.73) !important;
+  transform-origin: top left !important;
+  width: calc(100% / 0.73) !important;
+}
+
+@media (max-width: 1400px) {
+  .widgetscale {
+    transform: scale(0.68) !important;
+    width: 147% !important;
+  }
+}
+
+@media (max-width: 1100px) {
+  .widgetscale {
+    transform: scale(0.62) !important;
+    width: 161% !important;
+  }
 }
 
 /* Keep Quarto/htmlwidget wrappers from adding scrollbars */
