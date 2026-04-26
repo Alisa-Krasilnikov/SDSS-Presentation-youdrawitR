@@ -1,5 +1,5 @@
 ---
-title: "`youdrawitR`: Integrating Interactive Graphical Testing into the **ggplot2** Ecosystem"
+title: "`youdrawitR`: Integrating Interactive Graphical Testing into the `ggplot2` Ecosystem"
 author: "Alisa Krasilnikov, Dr. Emily Robinson, Dillon Murphy"
 bibliography: references.bib
 nocite: |
@@ -51,14 +51,22 @@ Reveal.on('slidechanged', function(event) {
 - Different designs can lead to different interpretations 
 
 ## Graphical testing
-
+ 
+:::: columns
+::: {.column width=60%}
 - `Explicit` and `implicit` [@Vanderplas2020]
   - **Explicit:** Answer specific questions about a graph
   - **Implicit:** Have the user infer the question
 - Statistical lineups – `nullabor` package [@nullabor]
-
-
-![](images/clusters.png){fig-align="center"}
+:::
+::: {.column width=40%}
+```{r}
+#|fig-align: center
+#|out-width: 70%
+knitr::include_graphics("images/clusters.png")
+```
+:::
+::::
 
 ## The "You Draw It" Idea
 :::: {.columns}
@@ -88,7 +96,13 @@ Reveal.on('slidechanged', function(event) {
 
 ## The new `youdrawitR`
 
-![](images/youdrawitR documentation.png)
+```{r}
+#| fig-align: center
+knitr::include_graphics("images/youdrawitR documentation.png")
+```
+
+
+<!-- ## {background-image="images/youdrawitR documentation.png"} -->
 
 ## **Solution:** A `ggplot2`-Native Interface
 
@@ -106,7 +120,7 @@ drawit()
 
 The statistical visualization community works in **`ggplot2`**, so why should interactive testing be any different?
 
-## r2d3 
+## `r2d3`
 [@r2d3]
 
 ```r
@@ -170,22 +184,35 @@ if (options?.drawit && window.youdrawitAttachDrawit) {
 
 ![](images/futureAdd.png){fig-align="center"}
 
-## `drawit()`: Structured Prediction
+## `drawit()`: Structured Prediction {.nostretch}
 
+:::: columns
+::: {.column width=50%}
 - User draws a predicted trend across a **highlighted region**
 - Designed for **one-to-one** x-y matching
 - Useful for: regressions, forecasting tasks, reveals of true trend
+:::
 
-::: {style="height: 350px; width: 500px; overflow: hidden; position: relative;"}
+::: {.column width=50%}
+::: {.widgetbox}
 ```{r}
 #| echo: false
-(ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm)) +
-  geom_point() +
+
+(ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm)) + 
+  geom_point(alpha = 0.5) +
   geom_smooth(method = "lm") +
   labs(x = "Bill Length (mm)", y = "Bill Depth (mm)")) |>
-  drawit(height = 300, width = 400, smoother = 2, show_on_finish = TRUE)
+  drawit(
+    smoother = 2,
+    show_on_finish = TRUE,
+    width = 500,
+    height = 300
+  )
 ```
 :::
+:::
+::::
+
 
 ## `drawit()`: Key Parameters
 
@@ -196,21 +223,29 @@ if (options?.drawit && window.youdrawitAttachDrawit) {
 | `smoother` | Reduces jitter in the drawn path |
 | `interpolator` | Controls density of intermediate points |
 
-## `sketchit()`: Freeform Drawing
+## `sketchit()`: Freeform Drawing {.nostretch}
 
+:::: columns
+::: {.column width=50%}
 - No one-to-one data matching required
 - Users can draw **multiple lines**
 - Consistent experience regardless of data density
+:::
 
-::: {style="height: 350px; width: 500px; overflow: hidden; position: relative;"}
+::: {.column width=50%}
+::: {.widgetbox}
 ```{r}
 #| echo: false
-(ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm)) +
+(ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm,
+                             colour = species)) +
   geom_point() +
-  labs(x = "Bill Length (mm)", y = "Bill_Depth (mm)"))  |>
-  sketchit(height = 300, width = 400)
+  labs(x = "Bill Length (mm)", y = "Bill Depth (mm)"))  |>
+  sketchit(height = 300, width = 500)
 ```
 :::
+:::
+::::
+
 
 ## `sketchit()`: Key Parameters
 

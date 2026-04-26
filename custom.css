@@ -12,14 +12,46 @@
   right: -20px !important;
 }
 
-.reveal section > div[style*="height"] {
-  overflow: hidden !important;
-  position: relative !important;
-  flex-shrink: 0 !important;
+.reveal .columns > .column {
+  min-width: 0 !important;
+  min-height: 0 !important;
 }
 
-.reveal section > div[style*="height"] .html-widget {
-  position: absolute !important;
-  top: 0 !important;
-  left: 0 !important;
+.widgetbox {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+.widgetbox > .cell-output-display,
+.widgetbox .html-fill-container,
+.widgetbox .html-fill-item,
+.widgetbox .html-fill-item-overflow-hidden,
+.widgetbox .html-widget,
+.widgetbox .html-widget-static-bound,
+.widgetbox iframe {
+  max-width: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  display: block !important;
+  overflow-x: hidden !important;
+  overflow-y: hidden !important;
+  box-sizing: border-box;
+}
+
+/* optional: hide scrollbar chrome if a browser still reserves it */
+.widgetbox > .cell-output-display::-webkit-scrollbar,
+.widgetbox .html-fill-container::-webkit-scrollbar,
+.widgetbox .html-fill-item::-webkit-scrollbar,
+.widgetbox .html-widget::-webkit-scrollbar {
+  display: none;
+}
+
+.widgetbox > .cell-output-display,
+.widgetbox .html-fill-container,
+.widgetbox .html-fill-item,
+.widgetbox .html-widget {
+  scrollbar-width: none;
 }
