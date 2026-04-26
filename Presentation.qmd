@@ -195,6 +195,7 @@ if (options?.drawit && window.youdrawitAttachDrawit) {
 
 ::: {.column width=50%}
 ::: {.widgetbox}
+::: {.widgetscale}
 ```{r}
 #| echo: false
 
@@ -204,11 +205,10 @@ if (options?.drawit && window.youdrawitAttachDrawit) {
   labs(x = "Bill Length (mm)", y = "Bill Depth (mm)")) |>
   drawit(
     smoother = 2,
-    show_on_finish = TRUE,
-    width = 500,
-    height = 300
+    show_on_finish = TRUE
   )
 ```
+:::
 :::
 :::
 ::::
@@ -234,14 +234,16 @@ if (options?.drawit && window.youdrawitAttachDrawit) {
 
 ::: {.column width=50%}
 ::: {.widgetbox}
+::: {.widgetscale}
 ```{r}
 #| echo: false
 (ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm,
                              colour = species)) +
   geom_point() +
   labs(x = "Bill Length (mm)", y = "Bill Depth (mm)"))  |>
-  sketchit(height = 300, width = 500)
+  sketchit()
 ```
+:::
 :::
 :::
 ::::

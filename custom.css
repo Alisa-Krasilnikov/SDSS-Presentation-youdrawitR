@@ -21,37 +21,32 @@
   width: 100%;
   max-width: 100%;
   min-width: 0 !important;
-  min-height: 0 !important;
   overflow: hidden !important;
 }
 
-.widgetbox > .cell-output-display,
+/* Scale the widget visually instead of resizing the htmlwidget itself */
+.widgetscale {
+  transform: scale(0.73);
+  transform-origin: top left;
+  width: calc(100% / 0.73);
+}
+
+/* Keep Quarto/htmlwidget wrappers from adding scrollbars */
+.widgetbox .cell-output-display,
 .widgetbox .html-fill-container,
 .widgetbox .html-fill-item,
 .widgetbox .html-fill-item-overflow-hidden,
 .widgetbox .html-widget,
 .widgetbox .html-widget-static-bound,
 .widgetbox iframe {
-  max-width: 100% !important;
-  min-width: 0 !important;
-  min-height: 0 !important;
-  display: block !important;
-  overflow-x: hidden !important;
-  overflow-y: hidden !important;
-  box-sizing: border-box;
+  overflow: hidden !important;
+  max-width: none !important;
+  scrollbar-width: none;
 }
 
-/* optional: hide scrollbar chrome if a browser still reserves it */
-.widgetbox > .cell-output-display::-webkit-scrollbar,
+.widgetbox .cell-output-display::-webkit-scrollbar,
 .widgetbox .html-fill-container::-webkit-scrollbar,
 .widgetbox .html-fill-item::-webkit-scrollbar,
 .widgetbox .html-widget::-webkit-scrollbar {
   display: none;
-}
-
-.widgetbox > .cell-output-display,
-.widgetbox .html-fill-container,
-.widgetbox .html-fill-item,
-.widgetbox .html-widget {
-  scrollbar-width: none;
 }
