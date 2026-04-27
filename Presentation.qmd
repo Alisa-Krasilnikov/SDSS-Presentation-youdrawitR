@@ -40,15 +40,37 @@ Reveal.on('slidechanged', function(event) {
 
 - Visualization turns raw data into accessible narratives
 - Graphs and charts are everywhere
-  - Statistical charts are a central way people engage with data
+  - Statistical charts are a central way people engage with data [@schneider2024crisis]
 
-  
+:::: columns
+::: {.column width="30%"}
+![](images/Steps.png){width=80%}
+:::
+::: {.column width="55%"}
+![](images/Fire.png){width=90%}
+:::
+
+::: {.column width="15%"}
+<small>@airnow_fire_smoke_map</small>
+:::
+::::
+
 ## How do people actually read graphs?
 
+:::: columns
+::: {.column width=50%}
+- Fitting "by eye" [@mosteller1981eye]
 - Decisions made "by eye" [@robinson2023_eye_fitting]
-  - COVID-19 graphs [@schneider2024crisis]
-- Important to convey information correctly
-- Different designs can lead to different interpretations 
+  - Different designs can lead to different interpretations 
+  - Important to convey information correctly
+:::
+
+::: {.column width=50%}
+:::{style="text-align: center;"}
+![@schneider2024crisis](images/COVID Graph.png)
+:::
+:::
+:::: 
 
 ## Graphical testing
  

@@ -30,22 +30,32 @@
   transform-origin: top left !important;
   width: calc(100% / 0.73) !important;
 }
+/* 1920x1080 and similar large screens */
+@media (min-width: 1800px) {
+  .widgetscale {
+    transform: scale(0.58) !important;
+    width: 173% !important;
+  }
+}
 
-@media (min-width: 1500px) {
+/* Medium-large screens (1500–1799px) */
+@media (min-width: 1500px) and (max-width: 1799px) {
   .widgetscale {
     transform: scale(0.66) !important;
     width: 152% !important;
   }
 }
 
-@media (max-width: 1400px) {
+/* Medium screens (1100–1499px) */
+@media (min-width: 1100px) and (max-width: 1499px) {
   .widgetscale {
     transform: scale(0.68) !important;
     width: 147% !important;
   }
 }
 
-@media (max-width: 1100px) {
+/* Small screens (below 1100px) */
+@media (max-width: 1099px) {
   .widgetscale {
     transform: scale(0.62) !important;
     width: 161% !important;
