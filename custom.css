@@ -81,3 +81,11 @@
 .widgetbox .html-widget::-webkit-scrollbar {
   display: none;
 }
+
+.quarto-figure figcaption {
+  text-align: center;
+}
+
+.quarto-figure-center figcaption {
+  font-size: 0.6em !important;
+}

@@ -38,76 +38,67 @@ Reveal.on('slidechanged', function(event) {
 
 ## Graphs are Statistical Tools
 
-- Visualization turns raw data into accessible narratives
-- Graphs and charts are everywhere
-  - Statistical charts are a central way people engage with data [@schneider2024crisis]
-
-:::: columns
-::: {.column width="30%"}
-![](images/Steps.png){width=80%}
+::: columns
+::: {.column width="45%"}
+- Visualization turns raw data into accessible narratives [@schneider2024crisis]
+- People make decisions by looking at charts [@padilla2018decision]
+  - Statistical charts are a central way people engage with data
 :::
+
 ::: {.column width="55%"}
-![](images/Fire.png){width=90%}
+
+![@airnow_fire_smoke_map](images/airnow.png){width=100% fig-align="center" style="margin-left: 40px;"}
+:::
 :::
 
-::: {.column width="15%"}
-<small>@airnow_fire_smoke_map</small>
-:::
-::::
-
-## How do people actually read graphs?
+## Graphical Testing
 
 :::: columns
 ::: {.column width=50%}
-- Fitting "by eye" [@mosteller1981eye]
-- Decisions made "by eye" [@robinson2023_eye_fitting]
-  - Different designs can lead to different interpretations 
-  - Important to convey information correctly
+- Important to ensure information is conveyed correctly
+- Certain charts are more accurate than others [@cleveland1984]
+- Does not necessarily align with statistical intuition [@mosteller1981eye]
 :::
 
 ::: {.column width=50%}
 :::{style="text-align: center;"}
-![@schneider2024crisis](images/COVID Graph.png)
+![Early graphical testing from Cleveland and McGill [-@cleveland1984] showing similar segments (ex. B and C) are easier to distinguish in barplots](images/pievsbar.png)
 :::
 :::
 :::: 
 
-## Graphical testing
+## Modern Graphical Testing
  
 :::: columns
 ::: {.column width=60%}
 - `Explicit` and `implicit` [@Vanderplas2020]
   - **Explicit:** Answer specific questions about a graph
   - **Implicit:** Have the user infer the question
-- Statistical lineups – `nullabor` package [@nullabor]
+- Statistical lineups – `nullabor` package [@wickham2018nullabor]
 :::
 ::: {.column width=40%}
-```{r}
-#|fig-align: center
-#|out-width: 70%
-knitr::include_graphics("images/clusters.png")
-```
+![`nullabor` plot displaying true `palmerpenguins` dataset [@palmerpenguins] amongst randomized groupings](images/clusters.png)
 :::
 ::::
 
-## The "You Draw It" Idea
+## The 'You Draw It' Idea
 :::: {.columns}
 ::: {.column width="50%"}
-- Introduced by the **New York Times**
+- **Interactive Graphics** have become more prevalent
+- 'You Draw It' introduced by the **New York Times**
 - Show viewers part of a trend + ask them to **draw the rest** [@katz2017you_draw_it]
-- Reveals assumptions, biases, and engagement in a way passive charts cannot
 :::
 ::: {.column width="50%"}
-![](images/NYT Task.png)
+![NYT 'You Draw It' graph, displaying the true trend after the user has completed drawing [@katz2017you_draw_it]](images/NYT Task.png)
 :::
 ::::
 
 ## `youdrawitR` for Graphical Testing
 
 - Originally modified by Dr. Emily Robinson
-  - Testing perception of log vs. linear scales [@Robinson2022_dissertation]
+  - Testing perception of log vs. linear scales [-@Robinson2022_dissertation]
   - Designed to render within Shiny to receive user input
-- Built as an R package by Dillon Murphy
+- Built as an R package by Dillon Murphy et al. [-@youdrawitR0]
 
 ![](images/Dr. Robinson Task.png){fig-align="center"}
 
@@ -204,7 +195,7 @@ if (options?.drawit && window.youdrawitAttachDrawit) {
 
 ## Restructuring of `youdrawitR`
 
-![](images/futureAdd.png){fig-align="center"}
+![`youdrawitR` separation of modules](images/separatedMods-og.png){fig-align="center"}
 
 ## `drawit()`: Structured Prediction {.nostretch}
 
@@ -238,12 +229,20 @@ if (options?.drawit && window.youdrawitAttachDrawit) {
 
 ## `drawit()`: Key Parameters
 
+::: {style="font-size: 0.75em; width: 100%;"}
 | Argument | Purpose |
 |---|---|
-| `draw_start` | Where drawing begins on the x-axis |
-| `show_on_finish` | Reveals the true line after drawing |
-| `smoother` | Reduces jitter in the drawn path |
+| `draw_start` &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Where drawing begins on the x-axis |
+| `show_on_finish`     | Reveals secondary geometry|
+| `smoother` | Controls point binning in draw space|
 | `interpolator` | Controls density of intermediate points |
+:::
+
+::: {layout-ncol=2}
+![](images/palmerpenguins-jittery.png){style="height:300px; width:auto;"}
+
+![](images/mtcars-chunky.png){style="height:300px; width:auto;"}
+:::
 
 ## `sketchit()`: Freeform Drawing {.nostretch}
 
@@ -251,7 +250,7 @@ if (options?.drawit && window.youdrawitAttachDrawit) {
 ::: {.column width=50%}
 - No one-to-one data matching required
 - Users can draw **multiple lines**
-- Consistent experience regardless of data density
+- Useful for: clusters, point detection
 :::
 
 ::: {.column width=50%}
@@ -273,13 +272,20 @@ if (options?.drawit && window.youdrawitAttachDrawit) {
 
 ## `sketchit()`: Key Parameters
 
+::: {style="font-size: 0.75em; width: 100%;"}
 | Argument | Purpose |
 |---|---|
 | `palette` | Set of colors available for drawing |
 | `starting_color` | Initial drawing color |
-| `button_position` | Position of control interface (to avoid overlapping data) |
+| `button_position` | Position of control interface |
 | `min_lines` / `max_lines` | Controls the number of lines the user can draw|
+:::
 
+::: {layout-ncol=2}
+![](images/min-lines.png){style="height:300px; width:auto;"}
+
+![](images/max-lines.png){style="height:300px; width:auto;"}
+:::
 
 ## Shiny Integration
 
@@ -305,7 +311,7 @@ Captured data aligns with original x-values, ready for **merging and analysis**.
 ## The Bigger Picture: An Interactive Grammar
 
 `youdrawitR` treats interactivity as a **grammatical layer**
-added to a plot just as easily as a geom or theme.
+that can ba tacked onto a plot.
 
 This lowers the barrier and keeps researchers within familiar `ggplot2` syntax.
 
@@ -316,28 +322,66 @@ This lowers the barrier and keeps researchers within familiar `ggplot2` syntax.
 :::
 
 ## Usability Testing
-
-- Recruited 10 participants
+:::: columns
+::: {.column width="50%"}
+- Recruited 9 participants
   - Familiar with `ggplot2`
   - Backgrounds primarily in graphical testing and education
   
-- Thinkaloud + Semi-structured interview
+- Thinkaloud (25 mins) + Semi-structured interview (5 mins) [@rogers2023datagathering]
 - User vs. **Implementer**
+:::
+
+::: {.column width="50%" style="font-size: 0.5em; border: 1px solid gray; border-radius: 5px; padding: 10px; box-sizing: border-box;"}
+**Interview Questions:**
+
+1. How would you describe your overall experience?
+2. Were there any parts of the task you struggled with?
+3. Do you see yourself using this tool?
+4. What kinds of tasks would you use this for?
+5. How does this compare to other available tools?
+6. What features would make you more likely to adopt it?
+:::
+::::
 
 ## Usability Testing
 
-- People found it easy to use and intuitive
-- Had reasons to use it 
-- Wanted some features: 
+:::: {.columns}
+::: {.column width="50%"}
+- **People found it easy to use and intuitive**
+- **Had reasons to use it:**
+  - Research 
+  - Annotation
+  - Education
+
+:::
+
+::: {.column width="50%"}
+- **Wanted some features: **
   - Exporting with drawing
   - Data tracking in non-Shiny environment
+  - Buttons in `drawit()`
+
+:::
+
+::::
 
 ## What's Next
 
+:::: {.columns}
+::: {.column width="40%"}
 - Extend geometry: bar charts, histograms, boxplots, etc. 
   - Particularly interested in maps
 - **Python support** via `plotnine` integration
 - CRAN release
+
+:::
+
+::: {.column width="60%"}
+![Theoretical future addition of a boxplot with `brushit` interaction](images/boxplotbrushit.png)
+:::
+
+::::
 
 ## Thank You!
 
@@ -355,8 +399,8 @@ Documentation:
 :::
 ::::
 
-## References 
-::: {style="font-size: 0.7em;"}
+## References {.scrollable}
+::: {style="font-size: 0.6em;"}
 ::: {#refs}
 :::
 :::
